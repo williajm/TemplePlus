@@ -89,9 +89,9 @@ def ObjMeetsPrereqs(obj):
     if obj.divine_spell_level_can_cast() < 1:
         return 0
     # "Able to cast at least 2 divination spells." The requirement is character
-    # -wide, so count distinct castable divinations across ALL of the
-    # character's divine casting classes (a multiclass caster may satisfy it
-    # from any one of them).
+    # -wide, so count distinct DIVINE divinations the character can actually
+    # cast across ALL of their divine casting classes (a multiclass caster may
+    # satisfy it from any one of them).
     divine_classes = (stat_level_cleric, stat_level_druid, stat_level_paladin,
                       stat_level_ranger, stat_level_blackguard, stat_level_favored_soul)
     divinations = set()
@@ -99,19 +99,22 @@ def ObjMeetsPrereqs(obj):
         cls_lvl = obj.stat_level_get(cls)
         if cls_lvl < 1:
             continue
+        # A class only counts if it can actually cast spells at this level (e.g.
+        # a too-low casting stat, or a non-casting paladin/ranger level, yields
+        # no castable spells).
+        max_lvl = char_editor.get_max_spell_level(obj, cls, cls_lvl)
+        if max_lvl < 1:
+            continue
         # Cleric/druid prepare from the full divine list, which always contains
         # well over two divinations -- they qualify outright.
         if cls == stat_level_cleric or cls == stat_level_druid:
             return 1
-        # Spontaneous casters (Favored Soul) cast only what they know; prepared
-        # casters with a limited list (paladin/ranger/blackguard) cast their
-        # whole available class list, each up to its OWN max spell level.
+        # Spontaneous casters (Favored Soul) cast only what they KNOW for this
+        # class; prepared limited-list casters (paladin/ranger/blackguard) cast
+        # their whole available class list.
         if cls == stat_level_favored_soul:
-            class_spells = obj.spells_known
+            class_spells = [sp for sp in obj.spells_known if sp.caster_class == cls]
         else:
-            max_lvl = char_editor.get_max_spell_level(obj, cls, cls_lvl)
-            if max_lvl < 1:
-                continue
             class_spells = char_editor.get_learnable_spells(obj, cls, max_lvl)
         for sp in class_spells:
             if sp.spell_level > 0 and tpdp.SpellEntry(sp.spell_enum).spell_school_enum == Divination:
