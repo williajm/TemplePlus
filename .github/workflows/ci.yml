@@ -8,7 +8,10 @@ on:
 jobs:
   build:
     name: Build TemplePlus
-    runs-on: windows-latest
+    # Pin to windows-2022: windows-latest has migrated to a VS 2026 image
+    # that ships without ATL (atlcomcli.h missing) and without the .NET 4.5.2
+    # reference assemblies the C# projects target.
+    runs-on: windows-2022
     outputs:
       version: ${{ steps.get_version.outputs.version }}
       release: ${{ steps.get_version.outputs.release }}
@@ -147,7 +150,7 @@ jobs:
 
   package-release:
     name: Package Release
-    runs-on: windows-latest
+    runs-on: windows-2022
     needs: build
     steps:
     - uses: actions/checkout@v4
