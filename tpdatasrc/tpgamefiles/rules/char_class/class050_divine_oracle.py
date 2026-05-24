@@ -83,20 +83,14 @@ def ObjMeetsPrereqs(obj):
     # Skill Focus (Knowledge) - ToEE only has the generic Skill Focus (Knowledge) feat
     if not obj.has_feat(feat_skill_focus_knowledge):
         return 0
-    # Able to cast at least 2 divination spells (divine or arcane)
-    if obj.divine_spell_level_can_cast() < 1 and obj.arcane_spell_level_can_cast() < 1:
-        return 0
-    divination_spells_known = 0
-    for knSp in obj.spells_known:
-        if knSp.spell_level > 0:
-            spell_entry = tpdp.SpellEntry(knSp.spell_enum)
-            if spell_entry.spell_school_enum == Divination:
-                divination_spells_known += 1
-                if divination_spells_known >= 2:
-                    break
-    # Vancian divine casters (cleric/druid) prepare from full list, so granting
-    # them the qualification once they have access to 1st level divine spells.
-    if divination_spells_known < 2 and obj.divine_spell_level_can_cast() < 1:
+    # Able to cast at least 2 divination spells. The class advances DIVINE
+    # spellcasting (all progression hooks bind to GetHighestDivineClass), so we
+    # require divine casting here -- an arcane-only caster could otherwise meet
+    # the prereq but gain no spellcasting progression from the class.
+    # Vancian divine casters (cleric/druid) prepare from their full list, so
+    # they satisfy the "2 divination spells" requirement once they can cast
+    # 1st-level divine spells.
+    if obj.divine_spell_level_can_cast() < 1:
         return 0
     return 1
 

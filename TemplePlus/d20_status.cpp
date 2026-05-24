@@ -214,7 +214,11 @@ void D20StatusSystem::initDomains(objHndl objHnd)
 
 void D20StatusSystem::initDomain(Dispatcher * dispatcher, uint32_t domain)
 {
-	if (domain) {
+	// ConditionArrayDomains is the vanilla ToEE table, populated only for the
+	// vanilla domains (0..Domain_Special). Modded domains such as Domain_Oracle
+	// have no entry there, so indexing with them would read past the table.
+	// They carry no vanilla domain condition anyway, so skip them.
+	if (domain && domain < Domain_Oracle) {
 		CondStruct * condStructDomain = *(conds.ConditionArrayDomains + 3 * domain);
 		uint32_t arg1 = *(conds.ConditionArrayDomainsArg1 + 3 * domain);
 		uint32_t arg2 = *(conds.ConditionArrayDomainsArg2 + 3 * domain);

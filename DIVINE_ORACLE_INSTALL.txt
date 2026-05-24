@@ -75,11 +75,13 @@ matching the Complete Divine source:
   4th: Scrying           9th: Foresight
   5th: Commune
 
-These spell-to-domain registrations are added at engine startup. Some of
-these spells (Augury, Commune, etc.) are stubs in the vanilla ToEE engine
--- they exist as spell enums but don't do much mechanically. The Oracle
-domain registers access to them per the rules; what each spell actually
-does is a separate concern.
+These spell-to-domain registrations are added at engine startup so the
+engine recognizes the Oracle domain. Note, however, that this list is not
+selectable as daily domain spells in normal play (see limitation 4 below);
+the practical benefit of the Oracle domain is the +2 caster level granted
+power. Some of these spells (Augury, Commune, etc.) are also stubs in the
+vanilla ToEE engine -- they exist as spell enums but don't do much
+mechanically.
 
 
 Known limitations
@@ -100,11 +102,16 @@ Known limitations
    and patching the vanilla evasion implementation, which lives in
    ToEE.exe and isn't currently hooked by TemplePlus.
 
-4. A plain cleric who picks Oracle as a regular domain at level 1 will
-   get the Oracle spell list in their domain slots but NOT the +2 caster
-   level granted power -- that bonus is wired to the Divine Oracle class
-   feature, not to the domain itself. To get the granted power, take the
-   Divine Oracle prestige class.
+4. Of the Oracle Domain feature, only the granted power (+2 caster level on
+   Divination spells) is functional in-game -- it is wired to the Divine
+   Oracle class feature and works automatically. The other half of the
+   feature ("choose the spells in that domain as her daily domain spells")
+   is NOT available: the engine only grants domain spells when the domain is
+   stored in the character's cleric domain slots, and no deity offers the
+   Oracle domain in the domain picker, so it can never be selected there.
+   The Oracle spell-to-domain registration exists in the engine but is not
+   reachable through normal play; treat the domain as the source of the
+   +2 caster level granted power only.
 
 5. Immune to Surprise gives the Divine Oracle 10+ character full normal
    actions during a surprise round (instead of strictly "a standard
