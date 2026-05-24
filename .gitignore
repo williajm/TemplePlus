@@ -1,6 +1,9 @@
 TemplePlus.ini
 .claude/
 
+# Source reference material (copyrighted) kept locally, never committed
+/Divine O.pdf
+
 # C++ objects and libs
 
 /dist
