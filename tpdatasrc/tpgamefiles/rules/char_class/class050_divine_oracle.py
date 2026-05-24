@@ -19,7 +19,7 @@ def GetClassDefinitionFlags():
 def GetClassHelpTopic():
     return "TAG_DIVINE_ORACLES"
 
-classEnum = stat_level_red_avenger # reusing this unused-but-declared enum slot to avoid C++ changes
+classEnum = stat_level_divine_oracle
 
 ###################################################
 

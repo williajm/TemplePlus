@@ -13,8 +13,8 @@ def GetSpellCasterConditionName():
 
 print "Registering " + GetConditionName()
 
-classEnum = stat_level_red_avenger # reusing this unused-but-declared enum slot to avoid C++ changes
-classSpecModule = __import__('class035_divine_oracle')
+classEnum = stat_level_divine_oracle
+classSpecModule = __import__('class050_divine_oracle')
 
 ###################################################
 
@@ -165,8 +165,8 @@ divinationEnhancement.MapToFeat("Divine Oracle Divination Enhancement")
 
 
 ## Immune to Surprise (Ex) ##
-# At 10th level, the divine oracle can always take a standard action during a
-# surprise round. Registered as a marker; full effect would require turn/initiative
-# system hooks.
+# Marker feat for the character sheet. Mechanical effect is implemented in
+# C++ at TurnBasedSys add-to-initiative time: Divine Oracle 10+ characters
+# skip the engine "Surprised" condition entirely (turn_based.cpp).
 immuneSurprise = PythonModifier("Divine Oracle Immune to Surprise", 0)
 immuneSurprise.MapToFeat("Divine Oracle Immune to Surprise")

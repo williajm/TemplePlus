@@ -338,6 +338,11 @@ private:
 	BOOL SpellEntriesInit(const char* spellRulesFodler);
 		bool SpellEntryFileParse(SpellEntry & spEntry, TioFile *tf);
 
+	// Injects the Oracle domain (Complete Divine) into the existing divination
+	// spells listed in its 1st-9th level granted spell list. Run once after
+	// SpellEntriesInit so the engine treats Oracle just like any other domain.
+	void AddOracleDomainSpells();
+
 	std::map<int, std::vector<SpellMultiOption>> mMultiOptions;
 	void GetSpellEntryExtFromClassSpec(std::map<int, int>& mapping, int classEnum);
 

@@ -548,6 +548,7 @@ StatType D20StatsSystem::GetType(Stat stat) {
 	case stat_level_warmage:
 	case stat_level_beguilers:
 	case stat_level_swashbuckler:
+	case stat_level_divine_oracle:
 
 	case stat_level_psion:
 	case stat_level_psychic_warrior:
