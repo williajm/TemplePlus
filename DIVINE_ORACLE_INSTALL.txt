@@ -1,0 +1,88 @@
+Divine Oracle Prestige Class — Install Instructions
+=====================================================
+
+This mod adds the Divine Oracle prestige class (from D&D 3.5e Complete Divine)
+to TemplePlus. It is a pure data mod — no recompile of TemplePlus.exe required.
+
+
+Files to copy into your TemplePlus install
+------------------------------------------
+
+From this download, copy these two files into your existing TemplePlus
+installation, overwriting the originals:
+
+  tpdata/tpgamefiles.dat     ->  <TemplePlus install>/tpdata/tpgamefiles.dat
+  tpdata/tprules/class_specs.tab  ->  <TemplePlus install>/tpdata/tprules/class_specs.tab
+
+That's it. Launch TemplePlus normally.
+
+(Recommended: back up the originals first by renaming them to .bak.)
+
+
+Picking up the class in-game
+----------------------------
+
+Divine Oracle is a prestige class. To take it, your character needs to meet
+the requirements at level-up:
+
+  * Knowledge (religion): 8 ranks
+  * Feat: Skill Focus (Knowledge)         <- ToEE only has the generic
+                                             "Skill Focus (Knowledge)" feat,
+                                             not per-knowledge variants
+  * Spellcasting: able to cast at least 2 divination spells
+                  (clerics and druids qualify automatically once they
+                   have 1st-level divine spells)
+
+Typical build: cleric 5 -> divine oracle 1+ on level up.
+
+
+Class summary
+-------------
+
+Hit Die: d6                    Skill points: 2 + Int
+BAB: poor (wizard)             Saves: Will favored; Fort/Ref poor
+
+Spellcasting: each Divine Oracle level adds +1 caster level to your existing
+divine class's spellcasting (like Mystic Theurge / Stormlord).
+
+Level features:
+  1  Oracle Domain (+2 caster level on Divination spells)
+  1  Scry Bonus (+1 sacred to DC of Divination [Scrying] spells)
+  2  Prescient Sense (granted as engine "Evasion")
+  3  Divination Enhancement (marker — see caveats)
+  4  Uncanny Dodge
+  6  Improved Uncanny Dodge
+  10 Immune to Surprise (marker — see caveats)
+
+
+Caveats / known limitations
+---------------------------
+
+1. Trap Sense (the PDF gives +1 at lvl 2, +2 at lvl 5, +3 at lvl 8) is NOT
+   implemented. The engine's existing Trap Sense callbacks are no-ops.
+
+2. Divination Enhancement (lvl 3) and Immune to Surprise (lvl 10) are
+   "marker" features — they show up on the character sheet but have no
+   mechanical effect. The TemplePlus engine has no hooks for spell-result
+   re-rolls or surprise-round overrides.
+
+3. Prescient Sense uses the engine's standard Evasion. The PDF says it
+   works in any armor; the engine may apply the same armor restriction
+   it uses for the monk/rogue Evasion ability.
+
+4. The Oracle Domain feature grants the +2 caster level on Divination
+   spells, but does NOT grant access to choose Oracle-domain spells
+   for daily prep — no Oracle domain enum exists in the engine.
+
+5. Internal stat slot: this mod re-uses an unused-but-declared class enum
+   slot (originally labeled "Red Avenger") to avoid C++ changes. The
+   user-facing name is "Divine Oracle" everywhere; you might see
+   "Red Avenger" only in debug logs or save-file internals.
+
+
+Uninstalling
+------------
+
+Restore your backups of tpgamefiles.dat and class_specs.tab. Any character
+that already took Divine Oracle levels will likely not load cleanly after
+uninstall — keep a save from before you took the class.

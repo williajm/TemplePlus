@@ -1,0 +1,5 @@
+name: Divine Oracle Oracle Domain
+flags: 8
+prereqs:
+description: Upon adopting the divine oracle class, the character gains access to the Oracle domain. The character gains the granted power associated with the domain (cast divination spells at +2 caster level), and can choose the spells in that domain as her daily domain spells.
+prereq descr: Divine Oracle level 1.

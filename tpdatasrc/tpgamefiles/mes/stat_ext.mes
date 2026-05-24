@@ -19,7 +19,7 @@
 // Other supplemental stuff for 3.5 ed
 {33}{Warlock}
 {34}{Favored Soul}
-{35}{Red Avenger}
+{35}{Divine Oracle}
 {36}{Iaijutsu Master}
 {37}{Sacred Fist}
 {38}{Stormlord}
@@ -90,7 +90,7 @@
 
 {1033}{Wrlk}
 {1034}{Fvrd}
-{1035}{}
+{1035}{DvOr}
 {1036}{}
 {1037}{}
 {1038}{}
@@ -300,6 +300,11 @@ Feats: Spell Focus (conjuration).
 Spells: Able to cast lesser planar ally.}
 
 {13027}Favored Soul{Favored souls cast divine spells by means of an innate connection rather than through laborious training and prayer, so their divine connection is natural rather than learned.}
+
+{13028}Divine Oracle{All divine oracles are spellcasters sharing a particular devotion to the Divination school of magic, having mastered all available means to catch glimpses of the future.
+
+Requirements: Knowledge (religion) 8 ranks, Skill Focus (Knowledge), able to cast at least 2 divination spells.
+}
 
 {13031}Stormlord{Stormlords wield thunder and lightning like a warrior wields his sword. They serve their deity through random, spectacular acts of violence.
 

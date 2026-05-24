@@ -58,6 +58,14 @@ jobs:
       env:
         TEMPLEPLUS_VERSION: ${{ steps.get_version.outputs.version }}
         COMMIT_ID: ${GITHUB_SHA::8}
+    - name: Pack tpdatasrc into .dat files
+      # PackFiles.bat regenerates tpgamefiles.dat (and the other .dat files)
+      # from tpdatasrc/, so the release artifact reflects any data-file mod
+      # changes. datpack.exe comes from the dependencies tarball above.
+      run: |
+        cd tpdatasrc
+        call PackFiles.bat
+      shell: cmd
     - name: Pack Release
       run: .\PackRelease.ps1
       shell: pwsh
