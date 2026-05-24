@@ -86,35 +86,39 @@ def ObjMeetsPrereqs(obj):
     # The class advances DIVINE spellcasting (all progression hooks bind to
     # GetHighestDivineClass), so require divine casting -- an arcane-only caster
     # could otherwise meet the prereq but gain no spellcasting progression.
-    max_divine_lvl = obj.divine_spell_level_can_cast()
-    if max_divine_lvl < 1:
+    if obj.divine_spell_level_can_cast() < 1:
         return 0
-    # Able to cast at least 2 divination spells. Cleric and druid prepare from
-    # the full divine list, which always contains many divinations, so any
-    # character with cleric/druid casting qualifies outright (fast path that
-    # also covers the common multiclass case).
-    if obj.stat_level_get(stat_level_cleric) > 0 or obj.stat_level_get(stat_level_druid) > 0:
-        return 1
-    # Other divine casters have restricted spell access, so count the divination
-    # spells they can actually cast:
-    #  - spontaneous casters (Favored Soul) cast only what they know;
-    #  - prepared casters with a limited list (paladin/ranger/blackguard) cast
-    #    their whole available class list (e.g. blackguard has only one
-    #    divination, so it does NOT qualify).
-    divine_class = char_class_utils.GetHighestDivineClass(obj)
-    if divine_class == stat_level_favored_soul:
-        castable_spells = obj.spells_known
-    else:
-        castable_spells = char_editor.get_learnable_spells(obj, divine_class, max_divine_lvl)
-    divination_spells = 0
-    for sp in castable_spells:
-        if sp.spell_level > 0 and tpdp.SpellEntry(sp.spell_enum).spell_school_enum == Divination:
-            divination_spells += 1
-            if divination_spells >= 2:
-                break
-    if divination_spells < 2:
-        return 0
-    return 1
+    # "Able to cast at least 2 divination spells." The requirement is character
+    # -wide, so count distinct castable divinations across ALL of the
+    # character's divine casting classes (a multiclass caster may satisfy it
+    # from any one of them).
+    divine_classes = (stat_level_cleric, stat_level_druid, stat_level_paladin,
+                      stat_level_ranger, stat_level_blackguard, stat_level_favored_soul)
+    divinations = set()
+    for cls in divine_classes:
+        cls_lvl = obj.stat_level_get(cls)
+        if cls_lvl < 1:
+            continue
+        # Cleric/druid prepare from the full divine list, which always contains
+        # well over two divinations -- they qualify outright.
+        if cls == stat_level_cleric or cls == stat_level_druid:
+            return 1
+        # Spontaneous casters (Favored Soul) cast only what they know; prepared
+        # casters with a limited list (paladin/ranger/blackguard) cast their
+        # whole available class list, each up to its OWN max spell level.
+        if cls == stat_level_favored_soul:
+            class_spells = obj.spells_known
+        else:
+            max_lvl = char_editor.get_max_spell_level(obj, cls, cls_lvl)
+            if max_lvl < 1:
+                continue
+            class_spells = char_editor.get_learnable_spells(obj, cls, max_lvl)
+        for sp in class_spells:
+            if sp.spell_level > 0 and tpdp.SpellEntry(sp.spell_enum).spell_school_enum == Divination:
+                divinations.add(sp.spell_enum)
+                if len(divinations) >= 2:
+                    return 1
+    return 0
 
 
 # Levelup
