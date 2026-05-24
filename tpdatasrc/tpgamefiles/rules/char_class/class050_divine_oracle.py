@@ -86,24 +86,34 @@ def ObjMeetsPrereqs(obj):
     # The class advances DIVINE spellcasting (all progression hooks bind to
     # GetHighestDivineClass), so require divine casting -- an arcane-only caster
     # could otherwise meet the prereq but gain no spellcasting progression.
-    if obj.divine_spell_level_can_cast() < 1:
+    max_divine_lvl = obj.divine_spell_level_can_cast()
+    if max_divine_lvl < 1:
         return 0
-    # Able to cast at least 2 divination spells. Vancian divine casters
-    # (cleric/druid) prepare from their full class list, which contains
-    # divinations, so they satisfy this automatically. Spontaneous divine
-    # casters only cast what they know, so they must actually know 2+ divination
-    # spells. Favored Soul is the only spontaneous divine class in the engine.
-    if char_class_utils.GetHighestDivineClass(obj) == stat_level_favored_soul:
-        divination_spells_known = 0
-        for knSp in obj.spells_known:
-            if knSp.spell_level > 0:
-                spell_entry = tpdp.SpellEntry(knSp.spell_enum)
-                if spell_entry.spell_school_enum == Divination:
-                    divination_spells_known += 1
-                    if divination_spells_known >= 2:
-                        break
-        if divination_spells_known < 2:
-            return 0
+    # Able to cast at least 2 divination spells. Cleric and druid prepare from
+    # the full divine list, which always contains many divinations, so any
+    # character with cleric/druid casting qualifies outright (fast path that
+    # also covers the common multiclass case).
+    if obj.stat_level_get(stat_level_cleric) > 0 or obj.stat_level_get(stat_level_druid) > 0:
+        return 1
+    # Other divine casters have restricted spell access, so count the divination
+    # spells they can actually cast:
+    #  - spontaneous casters (Favored Soul) cast only what they know;
+    #  - prepared casters with a limited list (paladin/ranger/blackguard) cast
+    #    their whole available class list (e.g. blackguard has only one
+    #    divination, so it does NOT qualify).
+    divine_class = char_class_utils.GetHighestDivineClass(obj)
+    if divine_class == stat_level_favored_soul:
+        castable_spells = obj.spells_known
+    else:
+        castable_spells = char_editor.get_learnable_spells(obj, divine_class, max_divine_lvl)
+    divination_spells = 0
+    for sp in castable_spells:
+        if sp.spell_level > 0 and tpdp.SpellEntry(sp.spell_enum).spell_school_enum == Divination:
+            divination_spells += 1
+            if divination_spells >= 2:
+                break
+    if divination_spells < 2:
+        return 0
     return 1
 
 
