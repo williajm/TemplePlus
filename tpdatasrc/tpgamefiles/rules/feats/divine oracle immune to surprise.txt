@@ -1,0 +1,5 @@
+name: Divine Oracle Immune to Surprise
+flags: 8
+prereqs:
+description: At 10th level, the divine oracle's sensitivity to danger is so great that she is never surprised. She can always take a standard action during a surprise round, unless she is physically restrained from doing so.
+prereq descr: Divine Oracle level 10.

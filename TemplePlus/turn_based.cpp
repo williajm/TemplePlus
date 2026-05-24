@@ -225,7 +225,15 @@ void TurnBasedSys::AddToInitiative(objHndl handle)
 	conds.AddTo(handle, "Flatfooted", {});
 	auto isSurpriseRound = temple::GetRef<BOOL>(0x10BCAD90);
 	if (isSurpriseRound){
-		conds.AddTo(handle, "Surprised", {});
+		// Divine Oracle 10+: Immune to Surprise. PDF says the oracle can always
+		// take a standard action during a surprise round; the cleanest engine
+		// expression of that is to skip the Surprised condition entirely
+		// (which means full normal turn instead of strictly a standard action).
+		// Erring on the player's favor for a 10th-level capstone is consistent
+		// with how other capstones are translated to ToEE's combat model.
+		if (objects.StatLevelGet(handle, stat_level_divine_oracle) < 10) {
+			conds.AddTo(handle, "Surprised", {});
+		}
 	}
 
 	/*auto addToInit = temple::GetRef<void(__cdecl)(objHndl)>(0x100DF1E0);

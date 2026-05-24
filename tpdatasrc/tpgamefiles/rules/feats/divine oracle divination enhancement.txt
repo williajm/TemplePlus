@@ -1,0 +1,5 @@
+name: Divine Oracle Divination Enhancement
+flags: 8
+prereqs:
+description: Beginning at 3rd level, a divine oracle may roll twice and take the better result when using divination spells such as augury or divination.
+prereq descr: Divine Oracle level 3.

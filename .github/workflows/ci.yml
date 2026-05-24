@@ -8,7 +8,10 @@ on:
 jobs:
   build:
     name: Build TemplePlus
-    runs-on: windows-latest
+    # Pin to windows-2022: windows-latest has migrated to a VS 2026 image
+    # that ships without ATL (atlcomcli.h missing) and without the .NET 4.5.2
+    # reference assemblies the C# projects target.
+    runs-on: windows-2022
     outputs:
       version: ${{ steps.get_version.outputs.version }}
       release: ${{ steps.get_version.outputs.release }}
@@ -50,14 +53,30 @@ jobs:
         nuget install Squirrel.Windows -OutputDirectory Squirrel -Verbosity Detailed
         nuget restore
     - name: Build
+      # Discover the VS install path via vswhere instead of hardcoding the
+      # Enterprise edition path; the windows-latest runner image's VS edition
+      # and path can change without warning.
       run: |
-        call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars32.bat"
+        for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set VSPATH=%%i
+        if not defined VSPATH (
+          echo Failed to locate Visual Studio installation via vswhere
+          exit /b 1
+        )
+        echo Using VS install: %VSPATH%
+        call "%VSPATH%\VC\Auxiliary\Build\vcvars32.bat"
         msbuild TemplePlus.sln /p:Configuration=Release /p:Platform=Win32 /p:MSBuildDefines="_TP_VERSION=%TEMPLEPLUS_VERSION%;_TP_COMMIT=%COMMIT_ID%;TP_RELEASE_BUILD" /verbosity:minimal
-      # Need to use cmd because of the vcvars32 batch file
       shell: cmd
       env:
         TEMPLEPLUS_VERSION: ${{ steps.get_version.outputs.version }}
         COMMIT_ID: ${GITHUB_SHA::8}
+    - name: Pack tpdatasrc into .dat files
+      # PackFiles.bat regenerates tpgamefiles.dat (and the other .dat files)
+      # from tpdatasrc/, so the release artifact reflects any data-file mod
+      # changes. datpack.exe comes from the dependencies tarball above.
+      run: |
+        cd tpdatasrc
+        call PackFiles.bat
+      shell: cmd
     - name: Pack Release
       run: .\PackRelease.ps1
       shell: pwsh
@@ -67,7 +86,8 @@ jobs:
       shell: cmd
       # Package the symbol files, dump_syms needs the dev tools to be on the PATH
       run: |
-        set PATH=%PATH%;C:\Program Files\Microsoft Visual Studio\2022\Enterprise\DIA SDK\bin
+        for /f "usebackq tokens=*" %%i in (`"%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath`) do set VSPATH=%%i
+        set PATH=%PATH%;%VSPATH%\DIA SDK\bin
         dependencies\bin\dump_syms.exe Release\TemplePlus.pdb > TemplePlus.sym
         7z a TemplePlusSymbols-${{ steps.get_version.outputs.version }}.zip TemplePlus.sym Release\TemplePlus.pdb
     - name: Pack Tools
@@ -130,7 +150,7 @@ jobs:
 
   package-release:
     name: Package Release
-    runs-on: windows-latest
+    runs-on: windows-2022
     needs: build
     steps:
     - uses: actions/checkout@v4

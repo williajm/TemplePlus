@@ -1,0 +1,5 @@
+name: Divine Oracle Scry Bonus
+flags: 8
+prereqs:
+description: A divine oracle adds a +1 sacred bonus to the save DC of all her divination (scrying) spells.
+prereq descr: Divine Oracle level 1.

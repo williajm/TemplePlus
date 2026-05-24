@@ -26,6 +26,7 @@ copy Release\ICSharpCode.SharpZipLib.dll dist
 copy Release\FontAwesome.WPF.dll dist
 copy Release\DeltaCompressionDotNet*.dll dist
 copy Release\TemplePlus.exe dist
+copy DIVINE_ORACLE_INSTALL.txt dist
 copy -Recurse tpdata dist\tpdata
 copy -Recurse dependencies\python-lib dist\tpdata\python-lib
 copy "C:\Program Files (x86)\Windows Kits\10\Redist\D3D\x86\d3dcompiler_47.dll" dist

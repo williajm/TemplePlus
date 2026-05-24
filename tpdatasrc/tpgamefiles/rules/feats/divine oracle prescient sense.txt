@@ -1,0 +1,5 @@
+name: Divine Oracle Prescient Sense
+flags: 8
+prereqs:
+description: Beginning at 2nd level, if a divine oracle makes a successful Reflex saving throw against an attack that normally inflicts half damage on a successful save (such as a red dragon's fiery breath or a fireball spell), she instead takes no damage. This form of evasion works no matter what armor the divine oracle wears.
+prereq descr: Divine Oracle level 2.

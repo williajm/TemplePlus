@@ -1,0 +1,127 @@
+Divine Oracle Prestige Class — Install Instructions
+=====================================================
+
+This mod adds the Divine Oracle prestige class (from D&D 3.5e Complete Divine)
+to TemplePlus. This version includes C++ engine changes for the Oracle domain
+and Immune to Surprise, so it ships as a custom TemplePlus build — you
+will replace TemplePlus.exe along with the data files.
+
+
+Files to copy into your TemplePlus install
+------------------------------------------
+
+This ZIP is a full TemplePlus distribution built from the Divine Oracle fork.
+Easiest install: back up your existing TemplePlus folder, then extract this
+ZIP over the top so it overwrites:
+
+  TemplePlus.exe
+  tpdata/tpgamefiles.dat
+  tpdata/tprules/class_specs.tab
+  (plus the usual TemplePlus DLLs and supporting files)
+
+Launch TemplePlus normally. Your existing saves should continue to work --
+the new class enum slot is appended at the end and doesn't shift any
+existing class IDs.
+
+(Strongly recommended: back up your old TemplePlus folder before overwriting.)
+
+
+Picking up the class in-game
+----------------------------
+
+Divine Oracle is a prestige class. To take it, your character needs to meet
+the requirements at level-up:
+
+  * Knowledge (religion): 8 ranks
+  * Feat: Skill Focus (Knowledge)         <- ToEE only has the generic
+                                             "Skill Focus (Knowledge)" feat,
+                                             not per-knowledge variants
+  * Spellcasting: able to cast at least 2 divination spells
+                  (clerics and druids qualify automatically once they
+                   have 1st-level divine spells)
+
+Typical build: cleric 5 -> divine oracle 1+ on level up.
+
+
+Class summary
+-------------
+
+Hit Die: d6                    Skill points: 2 + Int
+BAB: poor (wizard)             Saves: Will favored; Fort/Ref poor
+
+Spellcasting: each Divine Oracle level adds +1 caster level to your existing
+divine class's spellcasting (like Mystic Theurge / Stormlord).
+
+Level features:
+  1  Oracle Domain (+2 caster level on all Divination spells)
+  1  Scry Bonus (+1 sacred to DC of Divination [Scrying] spells)
+  2  Prescient Sense (granted as engine "Evasion")
+  3  Divination Enhancement (marker -- see limitations)
+  4  Uncanny Dodge
+  6  Improved Uncanny Dodge
+  10 Immune to Surprise (Divine Oracle 10+ characters skip the Surprised
+     condition entirely on entering combat during a surprise round)
+
+
+Oracle domain
+-------------
+
+The Oracle domain is now a real domain enum in the engine. Its spell list,
+matching the Complete Divine source:
+
+  1st: Identify          6th: Legend Lore
+  2nd: Augury            7th: Greater Scrying
+  3rd: Divination        8th: Discern Location
+  4th: Scrying           9th: Foresight
+  5th: Commune
+
+These spell-to-domain registrations are added at engine startup so the
+engine recognizes the Oracle domain. Note, however, that this list is not
+selectable as daily domain spells in normal play (see limitation 4 below);
+the practical benefit of the Oracle domain is the +2 caster level granted
+power. Some of these spells (Augury, Commune, etc.) are also stubs in the
+vanilla ToEE engine -- they exist as spell enums but don't do much
+mechanically.
+
+
+Known limitations
+-----------------
+
+1. Trap Sense (PDF L2/+1, L5/+2, L8/+3) is NOT implemented. The engine
+   doesn't distinguish trap-vs-non-trap reflex saves, so adding it would
+   either over-apply (universal reflex bonus) or require non-trivial
+   refactor of the save system. Skipped to avoid silent overage.
+
+2. Divination Enhancement (L3 -- roll twice, take better on divinations
+   like augury/divination) is a marker feat only. The relevant spells
+   don't have functioning result-mechanics to re-roll in the first place.
+
+3. Prescient Sense (L2) uses the engine's standard Evasion. The PDF says
+   it works in any armor; the engine inherits whatever armor restriction
+   it applies to monk/rogue Evasion. Fixing this would require finding
+   and patching the vanilla evasion implementation, which lives in
+   ToEE.exe and isn't currently hooked by TemplePlus.
+
+4. Of the Oracle Domain feature, only the granted power (+2 caster level on
+   Divination spells) is functional in-game -- it is wired to the Divine
+   Oracle class feature and works automatically. The other half of the
+   feature ("choose the spells in that domain as her daily domain spells")
+   is NOT available: the engine only grants domain spells when the domain is
+   stored in the character's cleric domain slots, and no deity offers the
+   Oracle domain in the domain picker, so it can never be selected there.
+   The Oracle spell-to-domain registration exists in the engine but is not
+   reachable through normal play; treat the domain as the source of the
+   +2 caster level granted power only.
+
+5. Immune to Surprise gives the Divine Oracle 10+ character full normal
+   actions during a surprise round (instead of strictly "a standard
+   action" per the PDF). This is more generous than RAW but consistent
+   with how other capstones translate to ToEE's combat model.
+
+
+Uninstalling
+------------
+
+Restore your backed-up TemplePlus folder. Characters that already took
+Divine Oracle levels won't load cleanly with stock TemplePlus -- keep a
+save from before you took the class.

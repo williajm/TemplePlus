@@ -267,7 +267,11 @@ public:
 		// SpellEntriesInit
 		replaceFunction<BOOL(__cdecl)(const char*)>(0x1007B5B0, [](const char* spellRulesFolder)->BOOL
 		{
-			return spellSys.SpellEntriesInit(spellRulesFolder);
+			BOOL result = spellSys.SpellEntriesInit(spellRulesFolder);
+			if (result) {
+				spellSys.AddOracleDomainSpells();
+			}
+			return result;
 		});
 
 
@@ -2425,6 +2429,43 @@ BOOL LegacySpellSystem::SpellEntriesInit(const char * spellRulesFolder){
 
 	tio_filelist_destroy(&flist);
 	return TRUE;
+}
+
+void LegacySpellSystem::AddOracleDomainSpells()
+{
+	// Oracle domain spell list (Complete Divine, also at realmshelps.net):
+	//   1st: Identify, 2nd: Augury, 3rd: Divination, 4th: Scrying,
+	//   5th: Commune, 6th: Legend Lore, 7th: Greater Scrying,
+	//   8th: Discern Location, 9th: Foresight.
+	// Granted power (+2 caster level on Divination) is applied separately via
+	// the Divine Oracle class feature; this method only registers the
+	// spell-by-level mapping the engine needs for domain spell selection.
+	static const std::pair<int, int> oracleSpells[] = {
+		{238, 1}, // Identify
+		{ 23, 2}, // Augury
+		{136, 3}, // Divination
+		{410, 4}, // Scrying
+		{ 69, 5}, // Commune
+		{264, 6}, // Legend Lore
+		{209, 7}, // Greater Scrying
+		{126, 8}, // Discern Location
+		{186, 9}, // Foresight
+	};
+
+	for (auto& spec : oracleSpells) {
+		auto spEntry = spellEntryRegistry.get(spec.first);
+		if (!spEntry) {
+			logger->warn("AddOracleDomainSpells: spell {} not in registry", spec.first);
+			continue;
+		}
+		if (spEntry->spellLvlsNum >= 10) {
+			logger->warn("AddOracleDomainSpells: spell {} has no room for Oracle entry", spec.first);
+			continue;
+		}
+		spEntry->spellLvls[spEntry->spellLvlsNum].spellClass = Domain_Oracle;
+		spEntry->spellLvls[spEntry->spellLvlsNum].slotLevel = spec.second;
+		spEntry->spellLvlsNum++;
+	}
 }
 
 // Factored out logic. Tries to look up a lowercased string key in the map, and
