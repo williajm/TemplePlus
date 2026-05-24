@@ -83,15 +83,27 @@ def ObjMeetsPrereqs(obj):
     # Skill Focus (Knowledge) - ToEE only has the generic Skill Focus (Knowledge) feat
     if not obj.has_feat(feat_skill_focus_knowledge):
         return 0
-    # Able to cast at least 2 divination spells. The class advances DIVINE
-    # spellcasting (all progression hooks bind to GetHighestDivineClass), so we
-    # require divine casting here -- an arcane-only caster could otherwise meet
-    # the prereq but gain no spellcasting progression from the class.
-    # Vancian divine casters (cleric/druid) prepare from their full list, so
-    # they satisfy the "2 divination spells" requirement once they can cast
-    # 1st-level divine spells.
+    # The class advances DIVINE spellcasting (all progression hooks bind to
+    # GetHighestDivineClass), so require divine casting -- an arcane-only caster
+    # could otherwise meet the prereq but gain no spellcasting progression.
     if obj.divine_spell_level_can_cast() < 1:
         return 0
+    # Able to cast at least 2 divination spells. Vancian divine casters
+    # (cleric/druid) prepare from their full class list, which contains
+    # divinations, so they satisfy this automatically. Spontaneous divine
+    # casters only cast what they know, so they must actually know 2+ divination
+    # spells. Favored Soul is the only spontaneous divine class in the engine.
+    if char_class_utils.GetHighestDivineClass(obj) == stat_level_favored_soul:
+        divination_spells_known = 0
+        for knSp in obj.spells_known:
+            if knSp.spell_level > 0:
+                spell_entry = tpdp.SpellEntry(knSp.spell_enum)
+                if spell_entry.spell_school_enum == Divination:
+                    divination_spells_known += 1
+                    if divination_spells_known >= 2:
+                        break
+        if divination_spells_known < 2:
+            return 0
     return 1
 
 
