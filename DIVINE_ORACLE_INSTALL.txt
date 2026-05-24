@@ -3,8 +3,8 @@ Divine Oracle Prestige Class — Install Instructions
 
 This mod adds the Divine Oracle prestige class (from D&D 3.5e Complete Divine)
 to TemplePlus. This version includes C++ engine changes for the Oracle domain
-and Immune to Surprise, so it ships as a custom TemplePlus build — your
-friend will replace TemplePlus.exe along with the data files.
+and Immune to Surprise, so it ships as a custom TemplePlus build — you
+will replace TemplePlus.exe along with the data files.
 
 
 Files to copy into your TemplePlus install
@@ -103,8 +103,8 @@ Known limitations
 4. A plain cleric who picks Oracle as a regular domain at level 1 will
    get the Oracle spell list in their domain slots but NOT the +2 caster
    level granted power -- that bonus is wired to the Divine Oracle class
-   feature, not to the domain itself. If your friend wants the granted
-   power, take the Divine Oracle prestige class.
+   feature, not to the domain itself. To get the granted power, take the
+   Divine Oracle prestige class.
 
 5. Immune to Surprise gives the Divine Oracle 10+ character full normal
    actions during a surprise round (instead of strictly "a standard
