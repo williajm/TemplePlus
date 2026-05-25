@@ -15,8 +15,11 @@ Easiest install: back up your existing TemplePlus folder, then extract this
 ZIP over the top so it overwrites:
 
   TemplePlus.exe
-  tpdata/tpgamefiles.dat
+  tpdata/tpgamefiles.dat        (includes rules/skills_props.json, which
+                                 enables the Knowledge (religion) skill)
   tpdata/tprules/class_specs.tab
+  tpdata/tprules/feat_properties.tab   (enables the Skill Focus (Knowledge)
+                                        feat so it can be chosen)
   (plus the usual TemplePlus DLLs and supporting files)
 
 Launch TemplePlus normally. Your existing saves should continue to work --
@@ -26,21 +29,51 @@ existing class IDs.
 (Strongly recommended: back up your old TemplePlus folder before overwriting.)
 
 
+Required settings
+-----------------
+
+Divine Oracle is non-core (Complete Divine) prestige content, so it only
+appears in the level-up class list when BOTH of these are enabled in the
+TemplePlus Configurator (or TemplePlus.ini):
+
+  * New Classes        (newClasses=true)
+  * Non-Core Materials (nonCoreMaterials=true)
+
+With "Non-Core Materials" off, the class is registered but is filtered out
+of the class picker entirely -- you will not see it at all. Note also that
+the configurator rewrites TemplePlus.ini when the game exits, so change
+these with the game closed (or via the Configurator) rather than editing
+the ini while TemplePlus is running.
+
+
 Picking up the class in-game
 ----------------------------
 
 Divine Oracle is a prestige class. To take it, your character needs to meet
 the requirements at level-up:
 
-  * Knowledge (religion): 8 ranks
+  * Knowledge (religion): 8 ranks         <- this build enables the
+                                             Knowledge (religion) skill (it is
+                                             one of ToEE's normally-hidden
+                                             skills) so it can be raised in
+                                             the level-up skill screen
   * Feat: Skill Focus (Knowledge)         <- ToEE only has the generic
                                              "Skill Focus (Knowledge)" feat,
-                                             not per-knowledge variants
+                                             not per-knowledge variants; this
+                                             build enables it so it appears in
+                                             the "Skill Focus" feat dropdown
   * Spellcasting: able to cast at least 2 divination spells
                   (clerics and druids qualify automatically once they
                    have 1st-level divine spells)
 
 Typical build: cleric 5 -> divine oracle 1+ on level up.
+
+Timing note: the requirements are checked on the class-selection screen,
+which comes BEFORE you spend that level's skill points. Knowledge (religion)
+maxes at character level + 3, so you cannot reach 8 ranks until cleric 5 is
+complete -- Divine Oracle therefore first becomes selectable at the level 6
+level-up (i.e. cleric 5 -> divine oracle 1). With non-core enabled there are
+several pages of classes; use the on-screen arrows to page to it.
 
 
 Class summary

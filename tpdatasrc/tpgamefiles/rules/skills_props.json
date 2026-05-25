@@ -1,0 +1,7 @@
+[
+{
+"comment": "Knowledge (religion) is disabled in vanilla ToEE (not shown in the skill UI). The Divine Oracle prestige class requires 8 ranks in it, so enable it here. It is already a cleric/druid/divine-oracle class skill in the respective class_skills tuples, so once enabled it appears in level-up and counts as a class skill.",
+"id": 34,
+"enabled": 1
+}
+]
